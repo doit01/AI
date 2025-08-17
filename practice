@@ -35,4 +35,24 @@ The main sequence of actions for tool calling
 
 Follow the Tool Calling documentation for further information on how to use this feature with different AI models.
 
+ the temperature setting that controls the randomness or creativity of the generated output.
+
+
+
+Advisors
+
+The Advisors API provides a flexible and powerful way to intercept, modify, and enhance AI-driven interactions in your Spring applications.
+
+A common pattern when calling an AI model with user text is to append or augment the prompt with contextual data.
+
+This contextual data can be of different types. Common types include:
+
+    Your own data: This is data the AI model hasn’t been trained on. Even if the model has seen similar data, the appended contextual data takes precedence in generating the response.
+
+    Conversational history: The chat model’s API is stateless. If you tell the AI model your name, it won’t remember it in subsequent interactions. Conversational history must be sent with each request to ensure previous interactions are considered when generating a response.
+
+Advisor Configuration in ChatClient
+
+The ChatClient fluent API provides an AdvisorSpec interface for configuring advisors. This interface offers methods to add parameters, set multiple parameters at once, and add one or more advisors to the chain.
+
 
