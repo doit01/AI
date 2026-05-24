@@ -1,0 +1,28 @@
+{
+  "allowedCommands": [
+    "docker",
+    "docker compose",
+    "powershell",
+    "gradle",
+    "bun",
+    "node",
+    "java",
+    "git",
+    "curl",
+    "winget"
+  ],
+  "allowedDomains": [
+    "registry.npmjs.org",
+    "repo1.maven.org",
+    "plugins.gradle.org",
+    "get.enterprisedb.com",
+    "github.com",
+    "docker.io"
+  ],
+  "allowedReadPaths": [
+    "."
+  ],
+  "allowedWritePaths": [
+    "."
+  ]
+}

@@ -28,6 +28,5 @@ Thumbs.db
 node_modules/
 
 # Subrepos
-harness/
 opencode-windows-x64/
 *.zip

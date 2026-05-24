@@ -1,0 +1,108 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "plugins": [
+    "oh-my-openagent@latest",
+    "@tarquinen/opencode-dcp@latest",
+    "superpowers@git+https://github.com/obra/superpowers.git"
+  ],
+  "agents": [
+    {
+      "name": "backend-dev",
+      "description": "Spring Boot + JPA 后端开发代理",
+      "skills": [
+        "springboot-patterns",
+        "springboot-tdd",
+        "java-coding-standards",
+        "jpa-patterns"
+      ]
+    },
+    {
+      "name": "frontend-dev",
+      "description": "Vue 3 + TypeScript 前端开发代理",
+      "skills": [
+        "frontend-patterns",
+        "coding-standards"
+      ]
+    },
+    {
+      "name": "fullstack-dev",
+      "description": "全栈开发代理 - demo 项目专用",
+      "skills": [
+        "springboot-patterns",
+        "springboot-tdd",
+        "java-coding-standards",
+        "frontend-patterns",
+        "e2e-testing"
+      ]
+    }
+  ],
+  "commands": {
+    "dev": {
+      "description": "启动全部开发环境 (DB + Backend + Frontend)",
+      "command": "powershell -File scripts/dev.ps1"
+    },
+    "backend:build": {
+      "description": "构建后端项目",
+      "command": "cd demo/backend && gradle build -x test"
+    },
+    "backend:run": {
+      "description": "运行后端项目",
+      "command": "cd demo/backend && gradle bootRun"
+    },
+    "frontend:install": {
+      "description": "安装前端依赖",
+      "command": "cd demo/frontend && bun install"
+    },
+    "frontend:dev": {
+      "description": "启动前端开发服务器",
+      "command": "cd demo/frontend && bun run dev"
+    },
+    "frontend:build": {
+      "description": "构建前端项目",
+      "command": "cd demo/frontend && bun run build"
+    },
+    "docker:build": {
+      "description": "Jib 构建 Docker 镜像",
+      "command": "cd demo/backend && gradle jibDockerBuild"
+    },
+    "test": {
+      "description": "运行所有测试",
+      "command": "cd demo/backend && gradle test"
+    }
+  },
+  "mcp": {
+    "postgres": {
+      "type": "local",
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-postgres", "postgresql://postgres:postgres@localhost:5432/demo"],
+      "description": "Harness 项目 PostgreSQL 数据库 — 查询 sys_department/sys_user/等表"
+    },
+    "context7": {
+      "type": "local",
+      "command": "npx",
+      "args": ["-y", "@upstash/context7-mcp@latest"],
+      "description": "实时文档查询 — Spring Boot, Vue, NaiveUI 等框架查最新 API"
+    },
+    "playwright": {
+      "type": "local",
+      "command": "npx",
+      "args": ["-y", "@playwright/mcp", "--browser", "chrome"],
+      "description": "浏览器自动化 — E2E 测试/页面截图"
+    },
+    "filesystem": {
+      "type": "local",
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-filesystem", "."],
+      "description": "Harness 项目文件系统访问"
+    },
+    "github": {
+      "type": "local",
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-github"],
+      "env": {
+        "GITHUB_PERSONAL_ACCESS_TOKEN": "${GITHUB_TOKEN}"
+      },
+      "description": "GitHub 操作 — PR, Issues, 代码搜索"
+    }
+  }
+}

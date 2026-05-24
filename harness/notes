@@ -1,0 +1,1 @@
+PS C:\Users\86152\Downloads\pgsql\bin> .\psql.exe -U 86152 -d postgres -p 5432

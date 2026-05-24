@@ -1,0 +1,9 @@
+.gradle/
+build/
+target/
+node_modules/
+dist/
+.env
+*.log
+.worktrees/
+.idea/

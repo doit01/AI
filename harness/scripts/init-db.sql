@@ -1,0 +1,8 @@
+-- 手动建库脚本（如需要）
+-- 先连到 postgres 默认库执行:
+-- CREATE DATABASE demo;
+-- 然后在 demo 库执行下面:
+-- 表由 JPA 自动创建，无需手动建表
+-- 数据由 DataInitializer 自动插入
+-- 如果 DataInitializer 没生效，可运行:
+-- INSERT INTO sys_department (name, sort) VALUES ('总公司', 1);

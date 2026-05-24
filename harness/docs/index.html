@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Harness 项目介绍</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #1a1a2e; color: #e0e0e0;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    line-height: 1.7; padding: 40px 20px;
+  }
+  .container { max-width: 900px; margin: 0 auto; }
+  h1 { font-size: 2em; margin-bottom: 8px; color: #7c3aed; }
+  .subtitle { color: #94a3b8; margin-bottom: 32px; font-size: 0.95em; }
+  h2 { font-size: 1.3em; margin: 28px 0 12px; color: #a78bfa; border-bottom: 1px solid #334155; padding-bottom: 6px; }
+  h3 { font-size: 1.05em; margin: 20px 0 8px; color: #c4b5fd; }
+  p, li { color: #cbd5e1; }
+  ul, ol { padding-left: 20px; margin: 8px 0; }
+  li { margin: 4px 0; }
+  code {
+    background: #0f172a; color: #e2e8f0; padding: 2px 6px; border-radius: 4px;
+    font-size: 0.9em; font-family: 'JetBrains Mono', 'Fira Code', monospace;
+  }
+  pre {
+    background: #0f172a; color: #e2e8f0; padding: 16px; border-radius: 8px;
+    overflow-x: auto; font-size: 0.88em; line-height: 1.5; margin: 12px 0;
+    border: 1px solid #1e293b;
+  }
+  .tag {
+    display: inline-block; padding: 2px 10px; border-radius: 12px;
+    font-size: 0.78em; font-weight: 600; margin: 2px 4px 2px 0;
+  }
+  .tag-backend { background: #1e3a5f; color: #60a5fa; }
+  .tag-frontend { background: #1e3a2f; color: #4ade80; }
+  .tag-db { background: #3b1e3a; color: #f472b6; }
+  .tag-tool { background: #3b2e1e; color: #fbbf24; }
+  .card {
+    background: #1e293b; border: 1px solid #334155; border-radius: 10px;
+    padding: 20px; margin: 16px 0;
+  }
+  .card-title { font-weight: 600; margin-bottom: 10px; color: #e2e8f0; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; margin: 12px 0; }
+  .grid-item {
+    background: #0f172a; border: 1px solid #1e293b; border-radius: 8px;
+    padding: 12px 16px; text-align: center;
+  }
+  .grid-item .label { font-size: 0.82em; color: #94a3b8; }
+  a { color: #818cf8; text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 0.92em; }
+  th, td { text-align: left; padding: 8px 12px; border-bottom: 1px solid #1e293b; }
+  th { color: #a78bfa; font-weight: 600; background: #0f172a; }
+  tr:hover td { background: #1e293b; }
+  .badge { display: inline-block; padding: 1px 8px; border-radius: 10px; font-size: 0.78em; font-weight: 600; }
+  .badge-green { background: #14532d; color: #4ade80; }
+  .badge-yellow { background: #422006; color: #facc15; }
+  .badge-blue { background: #1e3a5f; color: #60a5fa; }
+  .badge-purple { background: #2e1065; color: #a78bfa; }
+</style>
+</head>
+<body>
+<div class="container">
+
+<h1>🚀 Harness 项目</h1>
+<p class="subtitle">全栈 Spring Boot 4 + Vue 3 演示项目 — JPA 关联关系实战 + 多智能体编排 (OMO)</p>
+
+<h2>📋 项目概览</h2>
+<p>
+Harness 是一个用于演示 <strong>Spring Data JPA 核心关联关系</strong>的全栈项目，覆盖 OneToMany 自引用、ManyToOne、ManyToMany 三种主流场景。
+同时集成了 <strong>Oh My OpenAgent (OMO)</strong> 多智能体编排，提供 10+ 专业 AI 智能体辅助开发。
+</p>
+
+<div class="grid">
+  <div class="grid-item"><div class="label">后端</div><strong>Spring Boot 4.0.5</strong></div>
+  <div class="grid-item"><div class="label">语言</div><strong>JDK 25</strong></div>
+  <div class="grid-item"><div class="label">前端</div><strong>Vue 3 + NaiveUI</strong></div>
+  <div class="grid-item"><div class="label">构建</div><strong>Gradle + Bun</strong></div>
+  <div class="grid-item"><div class="label">数据库</div><strong>PostgreSQL 18</strong></div>
+  <div class="grid-item"><div class="label">容器化</div><strong>Jib</strong></div>
+  <div class="grid-item"><div class="label">代码简化</div><strong>Lombok</strong></div>
+  <div class="grid-item"><div class="label">智能体</div><strong>OMO (Oh My OpenAgent)</strong></div>
+</div>
+
+<h2>📁 项目结构</h2>
+<pre>
+harness/
+├── demo/
+│   ├── backend/               # 后端（按领域分包）
+│   │   └── src/main/java/com/demo/
+│   │       ├── common/        # BaseEntity (@MappedSuperclass)
+│   │       ├── config/        # CorsConfig, DataInitializer
+│   │       ├── department/    # DTO + Controller + Service + Repository + Entity
+│   │       ├── user/
+│   │       ├── role/
+│   │       ├── menu/
+│   │       └── manytomany/    # Student ↔ Course
+│   └── frontend/              # Vue 3 + NaiveUI + UnoCSS
+│       └── src/views/
+│           ├── department/    # 部门树 + 人员表格
+│           ├── user/          # 用户 CRUD
+│           ├── role/          # 角色 CRUD
+│           ├── menu/          # 菜单树
+│           └── manytomany/    # 学生 ↔ 课程 选课管理
+├── opencode.jsonc             # opencode 命令/智能体/MCP
+├── CLAUDE.md                  # 技术偏好（自动加载）
+└── AGENTS.md                  # 项目使用指引</pre>
+
+<h2>🔗 JPA 关联关系总览</h2>
+<table>
+  <tr><th>关系</th><th>实体</th><th>说明</th></tr>
+  <tr><td>@OneToMany 自引用</td><td>Department → Department</td><td>部门树（parent/children）</td></tr>
+  <tr><td>@ManyToOne</td><td>User → Department</td><td>用户所属部门</td></tr>
+  <tr><td>@ManyToMany</td><td>User ↔ Role</td><td>用户-角色（sys_user_role）</td></tr>
+  <tr><td>@ManyToMany</td><td>Role ↔ Menu</td><td>角色-菜单（sys_role_menu）</td></tr>
+  <tr><td>@OneToMany 自引用</td><td>Menu → Menu</td><td>菜单树（parent/children）</td></tr>
+  <tr><td>@ManyToMany</td><td>Student ↔ Course</td><td>学生选课（mm_student_course）</td></tr>
+</table>
+
+<h2>🛠️ 后端技术要点</h2>
+
+<div class="card">
+<div class="card-title">🏗️ 按领域分包</div>
+<p>不再按 <code>entity/</code> <code>service/</code> <code>controller/</code> 分层，而是每个领域一个包，包含完整 CRUD 闭环：</p>
+<pre>com.demo/department/
+├── Department.java         (Entity)
+├── DepartmentRepository.java
+├── DepartmentService.java
+├── DepartmentController.java
+└── DepartmentDto.java      (record)</pre>
+</div>
+
+<div class="card">
+<div class="card-title">📦 DTO 使用 <code>record</code></div>
+<p>所有 DTO 转为 Java <code>record</code>，不可变、自带 equals/hashCode/toString。复杂 DTO 使用 Lombok <code>@Builder</code>：</p>
+<pre>@Builder
+public record UserDto(
+    Long id,
+    @NotBlank String username,
+    @Email String email,
+    ...
+) {}</pre>
+<p>Controller 参数加 <code>@Valid</code> 触发校验：</p>
+<pre>@PostMapping
+public ResponseEntity&lt;UserDto&gt; create(@Valid @RequestBody UserDto dto)</pre>
+</div>
+
+<div class="card">
+<div class="card-title">🔐 关联集合用 Set 而非 List</div>
+<p>所有 <code>@OneToMany</code> 和 <code>@ManyToMany</code> 使用 <code>Set&lt;Entity&gt;</code> + <code>LinkedHashSet</code>，避免 Hibernate Bag 语义下的重复和更新问题：</p>
+<pre>@OneToMany(mappedBy = "parent", cascade = CascadeType.ALL, orphanRemoval = true)
+@OrderBy("sort ASC")
+private Set&lt;Department&gt; children = new LinkedHashSet&lt;&gt;();</pre>
+</div>
+
+<div class="card">
+<div class="card-title">🧬 BaseEntity 抽象基类</div>
+<p>公共的 <code>id</code>、<code>createdAt</code>、<code>@PrePersist</code> 提取到 <code>@MappedSuperclass</code>：</p>
+<pre>@Getter @Setter
+@MappedSuperclass
+public abstract class BaseEntity {
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    @Column(updatable = false)
+    private LocalDateTime createdAt;
+    @PrePersist
+    protected void onCreate() { createdAt = LocalDateTime.now(); }
+}</pre>
+</div>
+
+<div class="card">
+<div class="card-title">📊 数据初始化</div>
+<p>首次启动自动插入测试数据，检测到有数据跳过：</p>
+<pre>@Component @RequiredArgsConstructor
+public class DataInitializer implements CommandLineRunner {
+    @Override @Transactional
+    public void run(String... args) {
+        Long count = em.createQuery("select count(d) from Department d", Long.class).getSingleResult();
+        if (count > 0) { System.out.println("Data exists, skip."); return; }
+        // 插入 5 部门 + 4 用户 + 2 角色 + 5 菜单 + 3 课程 + 2 学生
+    }
+}</pre>
+</div>
+
+<div class="card">
+<div class="card-title">🔄 双向关联同步</div>
+<p>创建 User 时同步维护 Department.users 集合，保持双方一致性：</p>
+<pre>if (dto.getDepartmentId() != null) {
+    Department dept = deptRepo.findById(dto.getDepartmentId()).orElse(null);
+    u.setDepartment(dept);
+    if (dept != null) dept.getUsers().add(u);  // 同步反向
+}</pre>
+</div>
+
+<h2>🎨 前端技术要点</h2>
+
+<div class="card">
+<div class="card-title">🌙 深色主题</div>
+<p>使用 NaiveUI <code>darkTheme</code> 全局深色模式，搭配 UnoCSS <code>dark:</code> 变体：</p>
+<pre>&lt;NConfigProvider :theme="darkTheme" class="dark"&gt;
+  &lt;router-view /&gt;
+&lt;/NConfigProvider&gt;</pre>
+</div>
+
+<div class="card">
+<div class="card-title">🧭 左侧导航</div>
+<p>使用 <code>NLayout</code> + <code>NLayoutSider</code> + <code>NMenu</code> 构建侧边栏，展示全部 5 个 demo 页面：</p>
+<pre>const menuOptions = [
+  { label: '部门人员管理', key: '/departments', icon: ... },
+  { label: '用户管理', key: '/users', icon: ... },
+  { label: '角色管理', key: '/roles', icon: ... },
+  { label: '菜单管理', key: '/menus', icon: ... },
+  { label: '学生选课 (ManyToMany)', key: '/manytomany', icon: ... },
+]</pre>
+</div>
+
+<h2>🌐 页面功能</h2>
+<table>
+  <tr><th>页面</th><th>路由</th><th>功能</th></tr>
+  <tr><td>部门人员管理</td><td><code>/departments</code></td><td>左侧部门树 + 右侧人员表格（含角色 Tag），可添加子部门/添加人员/编辑/删除</td></tr>
+  <tr><td>用户管理</td><td><code>/users</code></td><td>用户列表 CRUD，关联部门和角色</td></tr>
+  <tr><td>角色管理</td><td><code>/roles</code></td><td>角色列表 CRUD，关联菜单权限</td></tr>
+  <tr><td>菜单管理</td><td><code>/menus</code></td><td>菜单树 CRUD，自引用 OneToMany</td></tr>
+  <tr><td>学生选课</td><td><code>/manytomany</code></td><td>3 个 Tab：维护学生 / 维护课程 / 维护选课（勾选关联）</td></tr>
+</table>
+
+<h2>🚀 启动方式</h2>
+<pre><span class="badge badge-green"># 一键启动（前后端 + 数据库检查）</span>
+opencode run dev
+
+<span class="badge badge-blue"># 或分别启动</span>
+cd demo/backend  && gradle bootRun          # http://localhost:8080
+cd demo/frontend && bun run dev             # http://localhost:3000</pre>
+
+<h2>⛽ Token 优化工具</h2>
+<div class="card">
+  <div class="card-title">RTK (Rust Token Killer)</div>
+  <p>CLI 输出压缩代理，自动拦截 bash 命令输出并压缩，减少 <strong>60-90%</strong> token 消耗。已安装于 <code>C:\Users\86152\AppData\Local\rtk\rtk.exe</code>，opencode 启动时自动加载插件，无需手动操作。</p>
+</div>
+<div class="card">
+  <div class="card-title">DCP (Dynamic Context Pruning)</div>
+  <p>动态上下文裁剪，自动识别并移除对话历史中过时的工具输出，用高保真摘要替换。已注册为 <code>@tarquinen/opencode-dcp@latest</code>，自动生效。</p>
+</div>
+
+<h2>🦸 Superpowers</h2>
+<div class="card">
+  <div class="card-title">Superpowers (obra, 186k stars)</div>
+  <p>注入软件工程最佳实践（TDD、YAGNI、代码审查、重构、头脑风暴等 50+ 技能），强制 AI 按工程师标准思考。</p>
+  <p>插件源：<code>superpowers@git+https://github.com/obra/superpowers.git</code></p>
+  <p>重启 opencode 后自动拉取注册，问 <em>"Do you have superpowers?"</em> 验证。</p>
+  <table>
+    <tr><th>常用技能</th><th>说明</th></tr>
+    <tr><td>brainstorming</td><td>方案头脑风暴</td></tr>
+    <tr><td>tdd</td><td>测试驱动开发</td></tr>
+    <tr><td>code-review</td><td>代码审查</td></tr>
+    <tr><td>refactoring</td><td>安全重构</td></tr>
+    <tr><td>debugging</td><td>结构化调试</td></tr>
+    <tr><td>planning</td><td>技术方案规划</td></tr>
+  </table>
+</div>
+
+<h2>🤖 OMO 多智能体</h2>
+<div class="card">
+  <p>安装了 <strong>Oh My OpenAgent (OMO)</strong>，用 <code>ultrawork</code> / <code>ulw</code> 关键词触发：</p>
+  <pre>opencode run "ultrawork 帮我实现用户导出功能"</pre>
+  <p>内置专业智能体：</p>
+  <table>
+    <tr><th>智能体</th><th>职责</th></tr>
+    <tr><td>Sisyphus</td><td>编排/协调</td></tr>
+    <tr><td>Oracle</td><td>架构决策 / 高 IQ 推理</td></tr>
+    <tr><td>Hephaestus</td><td>深度编码实现</td></tr>
+    <tr><td>Librarian</td><td>文档 / 研究查找</td></tr>
+    <tr><td>Prometheus</td><td>项目规划</td></tr>
+    <tr><td>Atlas</td><td>大规模重构</td></tr>
+  </table>
+</div>
+
+<h2>🧠 Skills（57 项）</h2>
+<p>全部位于 <code>C:\Users\86152\.claude\skills\</code>：</p>
+<div class="card">
+<div class="card-title">始终可用（项目相关）</div>
+<table>
+  <tr><th>技能</th><th>路径</th></tr>
+  <tr><td>springboot-patterns</td><td>C:\Users\86152\.claude\skills\springboot-patterns\SKILL.md</td></tr>
+  <tr><td>java-coding-standards</td><td>C:\Users\86152\.claude\skills\java-coding-standards\SKILL.md</td></tr>
+  <tr><td>coding-standards</td><td>C:\Users\86152\.claude\skills\coding-standards\SKILL.md</td></tr>
+  <tr><td>frontend-patterns</td><td>C:\Users\86152\.claude\skills\frontend-patterns\SKILL.md</td></tr>
+  <tr><td>api-design</td><td>C:\Users\86152\.claude\skills\api-design\SKILL.md</td></tr>
+  <tr><td>backend-patterns</td><td>C:\Users\86152\.claude\skills\backend-patterns\SKILL.md</td></tr>
+</table>
+</div>
+<div class="card">
+<div class="card-title">按需触发</div>
+<table>
+  <tr><th>技能</th><th>路径</th></tr>
+  <tr><td>springboot-tdd</td><td>C:\Users\86152\.claude\skills\springboot-tdd\SKILL.md</td></tr>
+  <tr><td>e2e-testing</td><td>C:\Users\86152\.claude\skills\e2e-testing\SKILL.md</td></tr>
+  <tr><td>frontend-design</td><td>C:\Users\86152\.claude\skills\frontend-design\SKILL.md</td></tr>
+  <tr><td>council</td><td>C:\Users\86152\.claude\skills\council\SKILL.md</td></tr>
+  <tr><td>mcp-server-patterns</td><td>C:\Users\86152\.claude\skills\mcp-server-patterns\SKILL.md</td></tr>
+  <tr><td>code-tour</td><td>C:\Users\86152\.claude\skills\code-tour\SKILL.md</td></tr>
+  <tr><td>hookify-rules</td><td>C:\Users\86152\.claude\skills\hookify-rules\SKILL.md</td></tr>
+</table>
+</div>
+
+<h2>🔌 MCP 服务器</h2>
+<p>注册于 <code>harness/opencode.jsonc</code> 的 <code>mcp</code> 字段：</p>
+<table>
+  <tr><th>名称</th><th>命令</th><th>用途</th></tr>
+  <tr><td>postgres</td><td><code>npx -y @modelcontextprotocol/server-postgres</code></td><td>数据库查询</td></tr>
+  <tr><td>context7</td><td><code>npx -y @upstash/context7-mcp@latest</code></td><td>实时文档查询</td></tr>
+  <tr><td>playwright</td><td><code>npx -y @playwright/mcp --browser chrome</code></td><td>浏览器自动化</td></tr>
+  <tr><td>filesystem</td><td><code>npx -y @modelcontextprotocol/server-filesystem .</code></td><td>文件系统访问</td></tr>
+  <tr><td>github</td><td><code>npx -y @modelcontextprotocol/server-github</code></td><td>GitHub PR/Issues</td></tr>
+</table>
+
+<h2>📟 opencode 命令</h2>
+<table>
+  <tr><th>命令</th><th>说明</th></tr>
+  <tr><td><code>opencode run dev</code></td><td>启动全部</td></tr>
+  <tr><td><code>opencode run backend:run</code></td><td>运行后端</td></tr>
+  <tr><td><code>opencode run frontend:dev</code></td><td>启动前端</td></tr>
+  <tr><td><code>opencode run test</code></td><td>运行测试</td></tr>
+  <tr><td><code>ultrawork/ulw &lt;任务&gt;</code></td><td>OMO 多智能体编排</td></tr>
+  <tr><td><code>@oracle &lt;问题&gt;</code></td><td>OMO 架构分析</td></tr>
+  <tr><td><code>@librarian &lt;问题&gt;</code></td><td>OMO 资料查找</td></tr>
+</table>
+
+<h2>🧪 API 接口</h2>
+<table>
+  <tr><th>前缀</th><th>端点</th><th>方法</th></tr>
+  <tr><td><code>/api/departments</code></td><td><code>/tree</code>, <code>/</code>, <code>/{id}</code></td><td>GET, POST, PUT, DELETE</td></tr>
+  <tr><td><code>/api/users</code></td><td><code>/</code>, <code>/{id}</code>, <code>/department/{deptId}</code></td><td>GET, POST, PUT, DELETE</td></tr>
+  <tr><td><code>/api/roles</code></td><td><code>/</code>, <code>/{id}</code></td><td>GET, POST, PUT, DELETE</td></tr>
+  <tr><td><code>/api/menus</code></td><td><code>/tree</code>, <code>/</code>, <code>/{id}</code></td><td>GET, POST, PUT, DELETE</td></tr>
+  <tr><td><code>/api/manytomany/students</code></td><td><code>/</code>, <code>/{id}</code></td><td>GET, POST, PUT, DELETE</td></tr>
+  <tr><td><code>/api/manytomany/courses</code></td><td><code>/</code>, <code>/{id}</code></td><td>GET, POST, PUT, DELETE</td></tr>
+</table>
+
+<h2>📝 配置文件</h2>
+<table>
+  <tr><th>文件</th><th>作用</th></tr>
+  <tr><td><code>opencode.jsonc</code></td><td>项目级 opencode 配置（命令/智能体/MCP 服务器）</td></tr>
+  <tr><td><code>CLAUDE.md</code></td><td>用户技术偏好 &amp; 使用指引（自动加载）</td></tr>
+  <tr><td><code>demo/backend/src/main/resources/application.yml</code></td><td>数据库连接配置</td></tr>
+</table>
+
+<h2>🔧 开发约定</h2>
+<ul>
+  <li><strong>JDK 25</strong> + Spring Boot 4.0.5，Gradle 构建</li>
+  <li><strong>PostgreSQL 18</strong> 原生运行（非 Docker），用户 <code>86152</code>，无密码</li>
+  <li>DDL 自动更新：<code>spring.jpa.hibernate.ddl-auto=update</code></li>
+  <li><strong>Aliyun Maven 镜像</strong>：<code>https://maven.aliyun.com/repository/public</code></li>
+  <li>Windows PowerShell 环境，中文 curl 用临时文件 + <code>@filename</code></li>
+  <li>代码风格：不用注释（除非要求）、不用 emoji（除非要求）</li>
+</ul>
+
+</div>
+</body>
+</html>
