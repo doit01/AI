@@ -1,0 +1,28 @@
+# Large binaries
+*.exe
+*.zip
+*.7z
+*.rar
+*.tar.gz
+*.dmg
+*.iso
+
+# PostgreSQL data
+pgdata/
+pg_log/
+
+# OS
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+
+# IDE
+.idea/
+.vscode/
+*.suo
+*.user
+*.vs/
+
+# Node
+node_modules/
