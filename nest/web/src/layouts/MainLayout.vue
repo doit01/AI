@@ -66,13 +66,15 @@ interface MenuItem {
 }
 
 const allMenuItems: MenuItem[] = [
+  { label: '技术概览', key: 'Welcome', icon: renderIcon('📖'), permission: '' },
   { label: '部门管理', key: 'Departments', icon: renderIcon('📁'), permission: 'dept:read' },
   { label: '用户管理', key: 'Users', icon: renderIcon('👤'), permission: 'user:read' },
   { label: '角色管理', key: 'Roles', icon: renderIcon('🔑'), permission: 'role:read' },
+  { label: '并发演示', key: 'Concurrency', icon: renderIcon('⏱'), permission: '' },
 ]
 
 const menuOptions = computed(() =>
-  allMenuItems.filter((item) => authStore.hasPermission(item.permission)),
+  allMenuItems.filter((item) => !item.permission || authStore.hasPermission(item.permission)),
 )
 
 const userMenuOptions = [
