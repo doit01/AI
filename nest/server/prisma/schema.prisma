@@ -72,3 +72,42 @@ model RolePermission {
   @@unique([roleId, permission])
   @@map("role_permissions")
 }
+
+/**
+ * 知识库 — 存储技术栈知识点，用于新人学习页面展示
+ *
+ * category 分类: architecture | nestjs | prisma | frontend | auth | patterns | logging | pitfalls
+ * tags 逗号分隔标签，如 "nestjs,di,decorator"
+ * 前台按 category 分组展示，排序按 sort 字段
+ */
+model Knowledge {
+  id        Int      @id @default(autoincrement())
+  title     String   @db.VarChar(200)
+  content   String   @db.Text
+  category  String   @db.VarChar(50)
+  tags      String?  @db.VarChar(200)
+  sort      Int      @default(0)
+  status    Int      @default(1)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("knowledge")
+}
+
+/**
+ * 计数器 — 用于并发控制演示
+ *
+ * 前台通过三种方式同时发送 N 次自增请求:
+ *   1. 无保护（出现竞态）
+ *   2. async-mutex（应用层互斥锁）
+ *   3. SELECT FOR UPDATE（数据库行锁）
+ * 观察最终结果与预期值 (N) 的差异
+ */
+model Counter {
+  id      Int    @id @default(autoincrement())
+  name    String @unique @db.VarChar(100)
+  value   Int    @default(0)
+  version Int    @default(0)
+
+  @@map("counters")
+}
