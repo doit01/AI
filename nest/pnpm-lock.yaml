@@ -8,7 +8,7 @@ importers:
 
   .: {}
 
-  packages/server:
+  server:
     dependencies:
       '@nestjs/common':
         specifier: ^11.0.0
@@ -90,7 +90,7 @@ importers:
         specifier: ^5.7.0
         version: 5.9.3
 
-  packages/web:
+  web:
     dependencies:
       axios:
         specifier: ^1.7.0

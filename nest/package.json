@@ -1,6 +1,9 @@
 {
   "name": "nest",
   "private": true,
+  "pnpm": {
+    "onlyBuiltDependencies": ["@nestjs/core", "@prisma/engines", "esbuild", "prisma"]
+  },
   "scripts": {
     "dev:server": "pnpm --filter @nest/server dev",
     "dev:web": "pnpm --filter @nest/web dev",

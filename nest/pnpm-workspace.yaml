@@ -1,2 +1,9 @@
 packages:
-  - 'packages/*'
+  - server
+  - web
+  - shared
+ignoredBuiltDependencies:
+  - '@nestjs/core'
+  - '@prisma/engines'
+  - esbuild
+  - prisma
