@@ -1,0 +1,74 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Department {
+  id        Int          @id @default(autoincrement())
+  name      String       @db.VarChar(100)
+  parentId  Int?
+  sort      Int          @default(0)
+  status    Int          @default(1)
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+  parent    Department?  @relation("DepartmentTree", fields: [parentId], references: [id], onDelete: SetNull)
+  children  Department[] @relation("DepartmentTree")
+  users     User[]
+
+  @@map("departments")
+}
+
+model User {
+  id           Int          @id @default(autoincrement())
+  username     String       @unique @db.VarChar(50)
+  password     String       @db.VarChar(200)
+  realName     String?      @db.VarChar(50)
+  email        String?      @db.VarChar(100)
+  phone        String?      @db.VarChar(20)
+  avatar       String?      @db.VarChar(500)
+  departmentId Int?
+  status       Int          @default(1)
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+  department   Department?  @relation(fields: [departmentId], references: [id], onDelete: SetNull)
+  roles        UserRole[]
+
+  @@map("users")
+}
+
+model Role {
+  id          Int          @id @default(autoincrement())
+  name        String       @db.VarChar(100)
+  code        String       @unique @db.VarChar(100)
+  description String?      @db.Text
+  status      Int          @default(1)
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  users       UserRole[]
+  permissions RolePermission[]
+
+  @@map("roles")
+}
+
+model UserRole {
+  userId Int
+  roleId Int
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role   Role @relation(fields: [roleId], references: [id], onDelete: Cascade)
+
+  @@id([userId, roleId])
+  @@map("user_roles")
+}
+
+model RolePermission {
+  id         Int    @id @default(autoincrement())
+  roleId     Int
+  permission String @db.VarChar(200)
+  role       Role   @relation(fields: [roleId], references: [id], onDelete: Cascade)
+
+  @@unique([roleId, permission])
+  @@map("role_permissions")
+}

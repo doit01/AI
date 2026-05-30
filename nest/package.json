@@ -1,0 +1,12 @@
+{
+  "name": "nest",
+  "private": true,
+  "scripts": {
+    "dev:server": "pnpm --filter @nest/server dev",
+    "dev:web": "pnpm --filter @nest/web dev",
+    "build:server": "pnpm --filter @nest/server build",
+    "build:web": "pnpm --filter @nest/web build",
+    "prisma:generate": "pnpm --filter @nest/server prisma:generate",
+    "prisma:migrate": "pnpm --filter @nest/server prisma:migrate"
+  }
+}
