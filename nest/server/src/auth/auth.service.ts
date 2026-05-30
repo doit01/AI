@@ -18,7 +18,7 @@ export class AuthService {
       where: { username: dto.username, password, status: 1 },
       include: {
         roles: {
-          include: { role: true },
+          include: { role: { include: { permissions: true } } },
         },
         department: true,
       },
@@ -31,20 +31,38 @@ export class AuthService {
     const payload = { sub: user.id, username: user.username }
     const accessToken = this.jwtService.sign(payload)
 
-    const { password: _, ...userWithoutPassword } = user
+    const permissions = this.extractPermissions(user.roles)
+
+    const { password: _, roles, ...userWithoutPassword } = user
     return {
       accessToken,
-      user: userWithoutPassword,
+      user: { ...userWithoutPassword, roles, permissions },
     }
   }
 
   async getProfile(userId: number) {
-    return this.prisma.user.findUnique({
+    const user = await this.prisma.user.findUnique({
       where: { id: userId },
       include: {
         roles: { include: { role: { include: { permissions: true } } } },
         department: true,
       },
     })
+    if (!user) throw new UnauthorizedException('用户不存在')
+    const permissions = this.extractPermissions(user.roles)
+    const { password, roles, ...userWithoutPassword } = user
+    return { ...userWithoutPassword, roles, permissions }
+  }
+
+  private extractPermissions(
+    roles: { role: { permissions: { permission: string }[] } }[],
+  ): string[] {
+    const set = new Set<string>()
+    for (const ur of roles) {
+      for (const rp of ur.role.permissions) {
+        set.add(rp.permission)
+      }
+    }
+    return [...set]
   }
 }

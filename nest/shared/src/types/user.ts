@@ -9,6 +9,7 @@ export interface User {
   status: number
   department?: { id: number; name: string } | null
   roles?: { role: { id: number; name: string; code: string } }[]
+  permissions: string[]
   createdAt: string
 }
 

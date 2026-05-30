@@ -1,7 +1,7 @@
 <template>
   <div>
     <n-page-header subtitle="角色管理">
-      <n-button type="primary" @click="openAddDialog">新增角色</n-button>
+      <n-button v-if="authStore.hasPermission('role:create')" type="primary" @click="openAddDialog">新增角色</n-button>
     </n-page-header>
 
     <n-card style="margin-top: 16px">
@@ -47,11 +47,13 @@
 <script setup lang="ts">
 import { ref, reactive, onMounted, h } from 'vue'
 import { useMessage, useDialog, NTag, NButton, NSpace, NPopconfirm } from 'naive-ui'
+import { useAuthStore } from '../stores/auth'
 import { ALL_PERMISSIONS } from '@nest/shared'
 import { getRoles, createRole, updateRole, deleteRole, type Role } from '../api/role'
 
 const message = useMessage()
 const dialog = useDialog()
+const authStore = useAuthStore()
 
 const loading = ref(false)
 const roleList = ref<Role[]>([])
@@ -109,8 +111,8 @@ const columns = [
     render: (row: Role) =>
       h(NSpace, { justify: 'center' }, {
         default: () => [
-          h(NButton, { size: 'tiny', quaternary: true, onClick: () => openEditDialog(row) }, { default: () => '编辑' }),
-          h(NButton, { size: 'tiny', quaternary: true, type: 'error', onClick: () => handleDelete(row) }, { default: () => '删除' }),
+          authStore.hasPermission('role:update') ? h(NButton, { size: 'tiny', quaternary: true, onClick: () => openEditDialog(row) }, { default: () => '编辑' }) : null,
+          authStore.hasPermission('role:delete') ? h(NButton, { size: 'tiny', quaternary: true, type: 'error', onClick: () => handleDelete(row) }, { default: () => '删除' }) : null,
         ],
       }),
   },

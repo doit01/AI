@@ -1,7 +1,7 @@
 <template>
   <div>
     <n-page-header subtitle="用户管理">
-      <n-button type="primary" @click="openAddDialog">新增用户</n-button>
+      <n-button v-if="authStore.hasPermission('user:create')" type="primary" @click="openAddDialog">新增用户</n-button>
     </n-page-header>
 
     <n-card style="margin-top: 16px">
@@ -88,12 +88,14 @@
 <script setup lang="ts">
 import { ref, reactive, onMounted, h, computed } from 'vue'
 import { useMessage, useDialog, NTag, NButton, NSpace } from 'naive-ui'
+import { useAuthStore } from '../stores/auth'
 import { getUsers, createUser, updateUser, deleteUser, type User } from '../api/user'
 import { getDepartments, type Department } from '../api/department'
 import { getRoles, type Role } from '../api/role'
 
 const message = useMessage()
 const dialog = useDialog()
+const authStore = useAuthStore()
 
 const loading = ref(false)
 const userList = ref<User[]>([])
@@ -172,8 +174,8 @@ const columns = [
     render: (row: User) =>
       h(NSpace, { justify: 'center' }, {
         default: () => [
-          h(NButton, { size: 'tiny', quaternary: true, onClick: () => openEditDialog(row) }, { default: () => '编辑' }),
-          h(NButton, { size: 'tiny', quaternary: true, type: 'error', onClick: () => handleDelete(row) }, { default: () => '删除' }),
+          authStore.hasPermission('user:update') ? h(NButton, { size: 'tiny', quaternary: true, onClick: () => openEditDialog(row) }, { default: () => '编辑' }) : null,
+          authStore.hasPermission('user:delete') ? h(NButton, { size: 'tiny', quaternary: true, type: 'error', onClick: () => handleDelete(row) }, { default: () => '删除' }) : null,
         ],
       }),
   },

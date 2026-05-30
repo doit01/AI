@@ -14,7 +14,7 @@ import { PermissionGuard } from './common/guards/permission.guard'
 
 @Module({
   imports: [
-    ConfigModule.forRoot({ isGlobal: true, envFilePath: '../../.env' }),
+    ConfigModule.forRoot({ isGlobal: true, envFilePath: '.env' }),
     PrismaModule,
     LoggerModule,
     AuthModule,

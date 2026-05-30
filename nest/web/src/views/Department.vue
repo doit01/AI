@@ -1,7 +1,7 @@
 <template>
   <div>
     <n-page-header subtitle="组织架构管理">
-      <n-button type="primary" @click="openAddDialog">新增部门</n-button>
+      <n-button v-if="authStore.hasPermission('dept:create')" type="primary" @click="openAddDialog">新增部门</n-button>
     </n-page-header>
 
     <n-card style="margin-top: 16px">
@@ -19,9 +19,9 @@
             <span>{{ node.name }}</span>
             <n-tag v-if="node.status === 0" size="tiny" type="warning" style="margin-left: 8px">禁用</n-tag>
             <span class="tree-node-actions">
-              <n-button size="tiny" quaternary @click.stop="openEditDialog(node)">编辑</n-button>
-              <n-button size="tiny" quaternary type="error" @click.stop="handleDelete(node)">删除</n-button>
-              <n-button size="tiny" quaternary @click.stop="openAddDialog(node.id)">添加子级</n-button>
+              <n-button v-if="authStore.hasPermission('dept:update')" size="tiny" quaternary @click.stop="openEditDialog(node)">编辑</n-button>
+              <n-button v-if="authStore.hasPermission('dept:delete')" size="tiny" quaternary type="error" @click.stop="handleDelete(node)">删除</n-button>
+              <n-button v-if="authStore.hasPermission('dept:create')" size="tiny" quaternary @click.stop="openAddDialog(node.id)">添加子级</n-button>
             </span>
           </span>
         </template>
@@ -60,10 +60,12 @@
 <script setup lang="ts">
 import { ref, reactive, onMounted, computed } from 'vue'
 import { useMessage, useDialog } from 'naive-ui'
+import { useAuthStore } from '../stores/auth'
 import { getDepartments, createDepartment, updateDepartment, deleteDepartment, type Department } from '../api/department'
 
 const message = useMessage()
 const dialog = useDialog()
+const authStore = useAuthStore()
 
 const treeData = ref<Department[]>([])
 const searchPattern = ref('')

@@ -15,9 +15,9 @@ const router = createRouter({
       component: () => import('../layouts/MainLayout.vue'),
       redirect: '/departments',
       children: [
-        { path: 'departments', name: 'Departments', component: () => import('../views/Department.vue') },
-        { path: 'users', name: 'Users', component: () => import('../views/User.vue') },
-        { path: 'roles', name: 'Roles', component: () => import('../views/Role.vue') },
+        { path: 'departments', name: 'Departments', component: () => import('../views/Department.vue'), meta: { permission: 'dept:read' } },
+        { path: 'users', name: 'Users', component: () => import('../views/User.vue'), meta: { permission: 'user:read' } },
+        { path: 'roles', name: 'Roles', component: () => import('../views/Role.vue'), meta: { permission: 'role:read' } },
       ],
     },
   ],
@@ -26,6 +26,9 @@ const router = createRouter({
 router.beforeEach((to) => {
   const auth = useAuthStore()
   if (!to.meta.public && !auth.isLoggedIn) {
+    return '/login'
+  }
+  if (to.meta.permission && !auth.hasPermission(to.meta.permission as string)) {
     return '/login'
   }
 })

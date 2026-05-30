@@ -58,11 +58,22 @@ function renderIcon(icon: string) {
   return () => h(NIcon, null, { default: () => h('span', { innerHTML: icon }) })
 }
 
-const menuOptions = [
-  { label: '部门管理', key: 'Departments', icon: renderIcon('📁') },
-  { label: '用户管理', key: 'Users', icon: renderIcon('👤') },
-  { label: '角色管理', key: 'Roles', icon: renderIcon('🔑') },
+interface MenuItem {
+  label: string
+  key: string
+  icon: () => any
+  permission: string
+}
+
+const allMenuItems: MenuItem[] = [
+  { label: '部门管理', key: 'Departments', icon: renderIcon('📁'), permission: 'dept:read' },
+  { label: '用户管理', key: 'Users', icon: renderIcon('👤'), permission: 'user:read' },
+  { label: '角色管理', key: 'Roles', icon: renderIcon('🔑'), permission: 'role:read' },
 ]
+
+const menuOptions = computed(() =>
+  allMenuItems.filter((item) => authStore.hasPermission(item.permission)),
+)
 
 const userMenuOptions = [
   { label: '退出登录', key: 'logout' },
