@@ -1,17 +1,7 @@
+import type { User } from '@nest/shared'
 import api from '.'
 
-export interface User {
-  id: number
-  username: string
-  realName: string | null
-  email: string | null
-  phone: string | null
-  departmentId: number | null
-  status: number
-  department?: { id: number; name: string } | null
-  roles?: { role: { id: number; name: string; code: string } }[]
-  createdAt: string
-}
+export type { User }
 
 export function getUsers(params: {
   keyword?: string

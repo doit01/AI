@@ -1,13 +1,7 @@
+import type { Department } from '@nest/shared'
 import api from '.'
 
-export interface Department {
-  id: number
-  name: string
-  parentId: number | null
-  sort: number
-  status: number
-  children?: Department[]
-}
+export type { Department }
 
 export function getDepartments() {
   return api.get<Department[]>('/departments')

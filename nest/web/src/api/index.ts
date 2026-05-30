@@ -25,11 +25,6 @@ api.interceptors.response.use(
   },
 )
 
-export default api
+export type { ApiResponse } from '@nest/shared'
 
-export interface ApiResponse<T = any> {
-  success: boolean
-  code: number
-  message: string
-  data: T
-}
+export default api

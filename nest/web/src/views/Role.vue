@@ -47,6 +47,7 @@
 <script setup lang="ts">
 import { ref, reactive, onMounted, h } from 'vue'
 import { useMessage, useDialog, NTag, NButton, NSpace, NPopconfirm } from 'naive-ui'
+import { ALL_PERMISSIONS } from '@nest/shared'
 import { getRoles, createRole, updateRole, deleteRole, type Role } from '../api/role'
 
 const message = useMessage()
@@ -72,11 +73,7 @@ const rules = {
   code: [{ required: true, message: '请输入角色编码' }],
 }
 
-const allPermissions = [
-  'user:create', 'user:read', 'user:update', 'user:delete',
-  'role:create', 'role:read', 'role:update', 'role:delete',
-  'dept:create', 'dept:read', 'dept:update', 'dept:delete',
-]
+const allPermissions = [...ALL_PERMISSIONS]
 
 const columns = [
   { title: 'ID', key: 'id', width: 64 },

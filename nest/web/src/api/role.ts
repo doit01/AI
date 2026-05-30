@@ -1,14 +1,7 @@
+import type { Role } from '@nest/shared'
 import api from '.'
 
-export interface Role {
-  id: number
-  name: string
-  code: string
-  description: string | null
-  status: number
-  permissions: { id: number; permission: string }[]
-  _count?: { users: number }
-}
+export type { Role }
 
 export function getRoles() {
   return api.get<Role[]>('/roles')

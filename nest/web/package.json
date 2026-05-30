@@ -9,6 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@nest/shared": "workspace:*",
     "axios": "^1.7.0",
     "naive-ui": "^2.40.0",
     "pinia": "^3.0.0",
