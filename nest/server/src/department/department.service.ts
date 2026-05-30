@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common'
+import { Injectable, ConflictException, NotFoundException } from '@nestjs/common'
 import { PrismaService } from '../prisma/prisma.service'
 import { BaseService } from '../common/base'
 import { CreateDepartmentDto, UpdateDepartmentDto } from './dto/department.dto'
@@ -29,6 +29,35 @@ export class DepartmentService extends BaseService<
     return { ...dto }
   }
 
+  /** 覆写 — 事务内检查+创建，避免 TOCTOU 竞态 */
+  override async create(dto: CreateDepartmentDto): Promise<any> {
+    return this.prisma.$transaction(async (tx) => {
+      const existing = await tx.department.findFirst({ where: { name: dto.name } })
+      if (existing) throw new ConflictException(`部门名称 "${dto.name}" 已存在`)
+
+      const data = this.toCreateData(dto) as any
+      return tx.department.create({ data })
+    })
+  }
+
+  /** 覆写 — 事务内检查+更新 */
+  override async update(id: number, dto: UpdateDepartmentDto): Promise<any> {
+    return this.prisma.$transaction(async (tx) => {
+      const dept = await tx.department.findUnique({ where: { id } })
+      if (!dept) throw new NotFoundException(`department 不存在`)
+
+      if (dto.name && dto.name !== dept.name) {
+        const dup = await tx.department.findFirst({
+          where: { name: dto.name, id: { not: id } },
+        })
+        if (dup) throw new ConflictException(`部门名称 "${dto.name}" 已存在`)
+      }
+
+      const data = this.toUpdateData(dto) as any
+      return tx.department.update({ where: { id }, data })
+    })
+  }
+
   /** 覆写 — 返回树形结构 */
   override async findAll(): Promise<any> {
     const depts = await this.prisma.department.findMany({
@@ -39,18 +68,23 @@ export class DepartmentService extends BaseService<
 
   /** 覆写 findOne — 保持原有方法签名 */
   override async findOne(id: number) {
-    // 调用父类的 findOne，它已包含 NotFoundException
     return super.findOne(id)
   }
 
-  /** 覆写 remove — 禁止删除有子部门的节点 */
+  /** 覆写 — 事务内检查子部门+删除，避免竞态 */
   override async remove(id: number): Promise<{ id: number }> {
-    await this.findOne(id)
-    const children = await this.prisma.department.findMany({ where: { parentId: id } })
-    if (children.length > 0) {
-      throw new Error('该部门下有子部门，无法删除')
-    }
-    return super.remove(id) // 调用父类删除
+    return this.prisma.$transaction(async (tx) => {
+      const dept = await tx.department.findUnique({ where: { id } })
+      if (!dept) throw new NotFoundException(`department 不存在`)
+
+      const children = await tx.department.findMany({ where: { parentId: id } })
+      if (children.length > 0) {
+        throw new Error('该部门下有子部门，无法删除')
+      }
+
+      await tx.department.delete({ where: { id } })
+      return { id }
+    })
   }
 
   /** 私有方法 — 构建树 */

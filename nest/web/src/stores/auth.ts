@@ -10,7 +10,7 @@ export const useAuthStore = defineStore('auth', () => {
   const permissions = computed(() => user.value?.permissions ?? [])
 
   function hasPermission(perm: string): boolean {
-    return permissions.value.includes(perm)
+    return permissions.value.includes('*') || permissions.value.includes(perm)
   }
 
   function hasAnyPermission(perms: string[]): boolean {

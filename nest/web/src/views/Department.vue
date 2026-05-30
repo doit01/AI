@@ -1,31 +1,34 @@
 <template>
   <div>
     <n-page-header subtitle="组织架构管理">
-      <n-button v-if="authStore.hasPermission('dept:create')" type="primary" @click="openAddDialog">新增部门</n-button>
+      <n-button v-if="authStore.hasPermission('dept:create')" type="primary" @click="() => openAddDialog()">新增部门</n-button>
     </n-page-header>
 
     <n-card style="margin-top: 16px">
+      <template #header>
+        <n-space align="center">
+          <n-input
+            v-model:value="searchKeyword"
+            placeholder="搜索部门名称"
+            clearable
+            style="width: 240px"
+          />
+          <n-button quaternary @click="fetchTree">
+            <template #icon>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2"/></svg>
+            </template>
+          </n-button>
+        </n-space>
+      </template>
+
       <n-tree
-        :data="treeData"
-        :pattern="searchPattern"
+        ref="treeRef"
+        :data="filteredTreeData"
         block-line
-        cascade
-        checkable
         default-expand-all
-        :node-props="nodeProps"
-      >
-        <template #default="{ node }">
-          <span class="tree-node">
-            <span>{{ node.name }}</span>
-            <n-tag v-if="node.status === 0" size="tiny" type="warning" style="margin-left: 8px">禁用</n-tag>
-            <span class="tree-node-actions">
-              <n-button v-if="authStore.hasPermission('dept:update')" size="tiny" quaternary @click.stop="openEditDialog(node)">编辑</n-button>
-              <n-button v-if="authStore.hasPermission('dept:delete')" size="tiny" quaternary type="error" @click.stop="handleDelete(node)">删除</n-button>
-              <n-button v-if="authStore.hasPermission('dept:create')" size="tiny" quaternary @click.stop="openAddDialog(node.id)">添加子级</n-button>
-            </span>
-          </span>
-        </template>
-      </n-tree>
+        expand-on-click
+        :render-label="renderLabel"
+      />
     </n-card>
 
     <n-modal v-model:show="showModal" :title="isEdit ? '编辑部门' : '新增部门'" preset="card" style="width: 480px">
@@ -48,6 +51,12 @@
         <n-form-item path="sort" label="排序">
           <n-input-number v-model:value="form.sort" :min="0" placeholder="排序号" />
         </n-form-item>
+        <n-form-item v-if="isEdit" path="status" label="状态">
+          <n-switch v-model:value="form.status" :checked-value="1" :unchecked-value="0">
+            <template #checked>启用</template>
+            <template #unchecked>禁用</template>
+          </n-switch>
+        </n-form-item>
       </n-form>
       <template #footer>
         <n-button @click="showModal = false">取消</n-button>
@@ -58,8 +67,8 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, onMounted, computed } from 'vue'
-import { useMessage, useDialog } from 'naive-ui'
+import { ref, reactive, onMounted, computed, h } from 'vue'
+import { useMessage, useDialog, NSpace, NButton, NTag } from 'naive-ui'
 import { useAuthStore } from '../stores/auth'
 import { getDepartments, createDepartment, updateDepartment, deleteDepartment, type Department } from '../api/department'
 
@@ -67,8 +76,9 @@ const message = useMessage()
 const dialog = useDialog()
 const authStore = useAuthStore()
 
+const treeRef = ref()
 const treeData = ref<Department[]>([])
-const searchPattern = ref('')
+const searchKeyword = ref('')
 const showModal = ref(false)
 const isEdit = ref(false)
 const editingId = ref<number | null>(null)
@@ -79,10 +89,29 @@ const form = reactive({
   name: '',
   parentId: null as number | null,
   sort: 0,
+  status: 1,
 })
 
 const rules = {
   name: [{ required: true, message: '请输入部门名称' }],
+}
+
+const filteredTreeData = computed(() => {
+  if (!searchKeyword.value) return treeData.value
+  return filterTree(treeData.value, searchKeyword.value.toLowerCase())
+})
+
+function filterTree(nodes: Department[], keyword: string): Department[] {
+  return nodes
+    .map((node) => {
+      const children = node.children ? filterTree(node.children, keyword) : []
+      const match = node.name.toLowerCase().includes(keyword)
+      if (match || children.length > 0) {
+        return { ...node, children }
+      }
+      return null
+    })
+    .filter(Boolean) as Department[]
 }
 
 onMounted(() => fetchTree())
@@ -102,6 +131,7 @@ function openAddDialog(parentId?: number) {
   form.name = ''
   form.parentId = parentId ?? null
   form.sort = 0
+  form.status = 1
   showModal.value = true
 }
 
@@ -111,6 +141,7 @@ function openEditDialog(node: any) {
   form.name = node.name
   form.parentId = node.parentId
   form.sort = node.sort
+  form.status = node.status ?? 1
   showModal.value = true
 }
 
@@ -119,7 +150,7 @@ async function handleSubmit() {
     await formRef.value?.validate()
     submitting.value = true
     if (isEdit.value && editingId.value) {
-      await updateDepartment(editingId.value, { name: form.name, sort: form.sort })
+      await updateDepartment(editingId.value, { name: form.name, sort: form.sort, status: form.status })
       message.success('更新成功')
     } else {
       await createDepartment({ name: form.name, parentId: form.parentId ?? undefined, sort: form.sort })
@@ -137,7 +168,7 @@ async function handleSubmit() {
 function handleDelete(node: any) {
   dialog.warning({
     title: '确认删除',
-    content: `确定删除部门 "${node.name}" 吗？`,
+    content: `确定删除部门 "${node.name}" 吗？${node.children?.length ? ' 该操作将同时删除所有子部门。' : ''}`,
     positiveText: '确定',
     negativeText: '取消',
     onPositiveClick: async () => {
@@ -152,10 +183,36 @@ function handleDelete(node: any) {
   })
 }
 
-function nodeProps({ option }: { option: Department }) {
-  return {
-    style: { width: '100%', display: 'flex' },
+function renderLabel({ option }: { option: Department }) {
+  const actions: any[] = []
+  if (authStore.hasPermission('dept:update')) {
+    actions.push(
+      h(NButton, { size: 'tiny', quaternary: true, onClick: () => openEditDialog(option) }, { default: () => '编辑' }),
+    )
   }
+  if (authStore.hasPermission('dept:delete')) {
+    actions.push(
+      h(NButton, { size: 'tiny', quaternary: true, type: 'error', onClick: () => handleDelete(option) }, { default: () => '删除' }),
+    )
+  }
+  if (authStore.hasPermission('dept:create')) {
+    actions.push(
+      h(NButton, { size: 'tiny', quaternary: true, onClick: () => openAddDialog(option.id) }, { default: () => '添加子级' }),
+    )
+  }
+
+  return h('span', { class: 'tree-node' }, [
+    h('span', { class: 'tree-node-name' }, [
+      h('span', { class: 'folder-icon' },
+        option.children?.length ? '📁' : '📄',
+      ),
+      h('span', { style: { fontWeight: option.children?.length ? '600' : '400' } }, option.name as string),
+      option.status === 0
+        ? h(NTag, { size: 'tiny', type: 'warning', style: 'margin-left: 8px' }, { default: () => '禁用' })
+        : null,
+    ]),
+    h('span', { class: 'tree-node-actions' }, actions),
+  ])
 }
 </script>
 
@@ -165,13 +222,25 @@ function nodeProps({ option }: { option: Department }) {
   align-items: center;
   justify-content: space-between;
   width: 100%;
-  padding-right: 16px;
+  padding-right: 12px;
+  min-height: 32px;
+}
+.tree-node-name {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  overflow: hidden;
+}
+.folder-icon {
+  font-size: 15px;
+  flex-shrink: 0;
 }
 .tree-node-actions {
   display: none;
-  gap: 4px;
+  gap: 2px;
+  flex-shrink: 0;
 }
-.n-tree-node-wrapper:hover .tree-node-actions {
+:deep(.n-tree-node-wrapper:hover) .tree-node-actions {
   display: flex;
 }
 </style>
