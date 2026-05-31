@@ -17,6 +17,7 @@ npm run dev
 
 ```bash
 VITE_MQTT_PROTOCOL=ws
+VITE_MQTT_URL=ws://127.0.0.1:8083/mqtt
 VITE_MQTT_HOST=127.0.0.1
 VITE_MQTT_PORT=8083
 VITE_MQTT_PATH=/mqtt
@@ -29,13 +30,14 @@ VITE_MQTT_PASSWORD=
 
 ```bash
 VITE_MQTT_PROTOCOL=wss
+VITE_MQTT_URL=wss://example.com:8084/mqtt
 VITE_MQTT_HOST=example.com
 VITE_MQTT_PORT=8084
 VITE_MQTT_PATH=/mqtt
 VITE_MQTT_TOPIC=scale/weight
 ```
 
-页面上也可以直接修改服务器 IP / 域名、端口、路径和订阅主题，方便现场调试。页面会展示最终拼出的 WebSocket 连接地址；连接失败或订阅失败时，错误消息会展示在 MQTT 连接卡片和页面告警中。
+页面顶部可以直接修改完整的 WebSocket 连接地址，实际连接会使用这个地址。下面的服务器 IP / 域名、端口、路径用于快速生成地址，点击“使用此地址”会回填到连接地址输入框。连接失败或订阅失败时，错误消息会展示在 MQTT 连接卡片和页面告警中。
 
 ## 浏览器为什么要用 WebSocket
 

@@ -5,6 +5,7 @@ export type ConnectionStatus = 'idle' | 'connecting' | 'connected' | 'reconnecti
 export type MqttProtocol = 'ws' | 'wss';
 
 export interface MqttScaleConfig {
+  url: string;
   protocol: MqttProtocol;
   host: string;
   port: string;
@@ -88,12 +89,16 @@ function normalizePath(path: string) {
   return trimmed.startsWith('/') ? trimmed : `/${trimmed}`;
 }
 
-export function buildMqttUrl(config: MqttScaleConfig) {
+export function buildMqttUrl(config: Pick<MqttScaleConfig, 'protocol' | 'host' | 'port' | 'path'>) {
   const protocol = config.protocol || 'ws';
   const host = config.host.trim();
   const port = config.port.trim();
   const path = normalizePath(config.path);
   return `${protocol}://${host}${port ? `:${port}` : ''}${path}`;
+}
+
+function getDefaultUrl(config: Pick<MqttScaleConfig, 'protocol' | 'host' | 'port' | 'path'>) {
+  return import.meta.env.VITE_MQTT_URL || buildMqttUrl(config);
 }
 
 export function useMqttScale() {
@@ -103,17 +108,23 @@ export function useMqttScale() {
   const currentReading = ref<ScaleReading | null>(null);
   const messages = ref<ScaleReading[]>([]);
 
-  const config = reactive<MqttScaleConfig>({
+  const baseConfig = {
     protocol: (import.meta.env.VITE_MQTT_PROTOCOL as MqttProtocol | undefined) || 'ws',
     host: import.meta.env.VITE_MQTT_HOST || '127.0.0.1',
     port: import.meta.env.VITE_MQTT_PORT || '8083',
     path: import.meta.env.VITE_MQTT_PATH || '/mqtt',
+  };
+
+  const config = reactive<MqttScaleConfig>({
+    ...baseConfig,
+    url: getDefaultUrl(baseConfig),
     topic: import.meta.env.VITE_MQTT_TOPIC || 'scale/weight',
     username: import.meta.env.VITE_MQTT_USERNAME || '',
     password: import.meta.env.VITE_MQTT_PASSWORD || '',
   });
 
-  const connectionUrl = computed(() => buildMqttUrl(config));
+  const connectionUrl = computed(() => config.url.trim());
+  const quickBuildUrl = computed(() => buildMqttUrl(config));
   const isConnected = computed(() => status.value === 'connected');
   const latestDisplay = computed(() => {
     if (!currentReading.value || currentReading.value.value === null) {
@@ -141,9 +152,15 @@ export function useMqttScale() {
     Object.assign(config, nextConfig);
     errorMessage.value = '';
 
-    if (!config.host.trim() || !config.topic.trim()) {
+    if (!connectionUrl.value || !config.topic.trim()) {
       status.value = 'error';
-      errorMessage.value = 'MQTT 服务器 IP/域名和订阅主题不能为空';
+      errorMessage.value = 'MQTT WebSocket 连接地址和订阅主题不能为空';
+      return;
+    }
+
+    if (!/^wss?:\/\//i.test(connectionUrl.value)) {
+      status.value = 'error';
+      errorMessage.value = '浏览器端 MQTT 地址必须以 ws:// 或 wss:// 开头';
       return;
     }
 
@@ -212,6 +229,7 @@ export function useMqttScale() {
     currentReading,
     messages,
     connectionUrl,
+    quickBuildUrl,
     isConnected,
     latestDisplay,
     connect,

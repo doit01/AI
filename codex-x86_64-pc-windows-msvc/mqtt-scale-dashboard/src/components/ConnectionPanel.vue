@@ -8,6 +8,14 @@
     </template>
 
     <n-form label-placement="top" :model="localConfig">
+      <n-form-item label="WebSocket 连接地址">
+        <n-input
+          v-model:value="localConfig.url"
+          placeholder="ws://127.0.0.1:8083/mqtt"
+          @keyup.enter="emitConnect"
+        />
+      </n-form-item>
+
       <n-grid :cols="4" :x-gap="16" responsive="screen">
         <n-form-item-gi label="协议">
           <n-select v-model:value="localConfig.protocol" :options="protocolOptions" />
@@ -15,10 +23,10 @@
         <n-form-item-gi :span="2" label="服务器 IP / 域名">
           <n-input v-model:value="localConfig.host" placeholder="127.0.0.1" />
         </n-form-item-gi>
-        <n-form-item-gi label="WebSocket 端口">
+        <n-form-item-gi label="端口">
           <n-input v-model:value="localConfig.port" placeholder="8083" />
         </n-form-item-gi>
-        <n-form-item-gi label="WebSocket 路径">
+        <n-form-item-gi label="路径">
           <n-input v-model:value="localConfig.path" placeholder="/mqtt" />
         </n-form-item-gi>
         <n-form-item-gi :span="3" label="订阅主题">
@@ -37,12 +45,20 @@
         </n-form-item-gi>
       </n-grid>
 
-      <div class="mb-4 rounded bg-gray-50 p-3">
-        <div class="flex items-center gap-2 text-xs text-gray-500">
-          <span class="i-lucide-bug" />
-          <span>调试连接地址</span>
+      <div class="mb-4 flex flex-wrap items-center justify-between gap-3 rounded bg-gray-50 p-3">
+        <div class="min-w-0">
+          <div class="flex items-center gap-2 text-xs text-gray-500">
+            <span class="i-lucide-bug" />
+            <span>根据 IP/端口生成的地址</span>
+          </div>
+          <div class="mt-1 break-all font-mono text-sm text-gray-800">{{ previewUrl }}</div>
         </div>
-        <div class="mt-1 break-all font-mono text-sm text-gray-800">{{ previewUrl }}</div>
+        <n-button secondary size="small" @click="applyPreviewUrl">
+          <template #icon>
+            <span class="i-lucide-arrow-up" />
+          </template>
+          使用此地址
+        </n-button>
       </div>
 
       <n-alert v-if="errorMessage" class="mb-4" title="连接错误" type="error">
@@ -126,6 +142,10 @@ const statusType = computed(() => {
   if (props.status === 'connecting' || props.status === 'reconnecting') return 'warning';
   return 'default';
 });
+
+function applyPreviewUrl() {
+  localConfig.url = previewUrl.value;
+}
 
 function emitConnect() {
   emit('connect', { ...localConfig });
