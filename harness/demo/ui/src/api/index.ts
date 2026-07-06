@@ -55,5 +55,14 @@ export const api = {
       update: (id: number, data: any) => request<any>(`/manytomany/courses/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
       delete: (id: number) => request<void>(`/manytomany/courses/${id}`, { method: 'DELETE' })
     }
+  },
+  ssm: {
+    tree: () => request<any[]>('/ssm/tree'),
+    sendProjectEvent: (id: number, event: string) =>
+      request<any>(`/ssm/projects/${id}/events`, { method: 'POST', body: JSON.stringify({ event }) }),
+    sendBatchEvent: (id: number, event: string) =>
+      request<any>(`/ssm/batches/${id}/events`, { method: 'POST', body: JSON.stringify({ event }) }),
+    sendStepEvent: (id: number, event: string) =>
+      request<any>(`/ssm/steps/${id}/events`, { method: 'POST', body: JSON.stringify({ event }) }),
   }
 }

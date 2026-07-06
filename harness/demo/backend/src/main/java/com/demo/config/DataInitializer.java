@@ -3,6 +3,12 @@ package com.demo.config;
 import com.demo.department.Department;
 import com.demo.manytomany.Course;
 import com.demo.manytomany.Student;
+import com.demo.ssm.batch.Batch;
+import com.demo.ssm.batch.BatchState;
+import com.demo.ssm.process.Process;
+import com.demo.ssm.project.Project;
+import com.demo.ssm.step.Step;
+import com.demo.ssm.step.StepState;
 import com.demo.menu.Menu;
 import com.demo.role.Role;
 import com.demo.user.User;
@@ -55,6 +61,53 @@ public class DataInitializer implements CommandLineRunner {
 
         Student s1 = new Student(); s1.setName("小明"); s1.setAge(20); s1.getCourses().add(math); s1.getCourses().add(cs); em.persist(s1);
         Student s2 = new Student(); s2.setName("小红"); s2.setAge(21); s2.getCourses().add(english); s2.getCourses().add(cs); em.persist(s2);
+
+        Long ssmCount = em.createQuery("select count(p) from Project p", Long.class).getSingleResult();
+        if (ssmCount == 0) {
+            var project = new Project();
+            project.setName("演示项目");
+            project.setCode("P001");
+            em.persist(project);
+
+            var process = new Process();
+            process.setName("注塑工艺");
+            process.setCode("PRC001");
+            process.setProject(project);
+            em.persist(process);
+
+            var batch1 = new Batch();
+            batch1.setName("批次-A");
+            batch1.setCode("B001");
+            batch1.setState(BatchState.PRODUCTION);
+            batch1.setProcess(process);
+            em.persist(batch1);
+
+            var batch2 = new Batch();
+            batch2.setName("批次-B");
+            batch2.setCode("B002");
+            batch2.setProcess(process);
+            em.persist(batch2);
+
+            for (int i = 1; i <= 3; i++) {
+                var step = new Step();
+                step.setName("步骤-" + i);
+                step.setCode("S00" + i);
+                step.setBatch(batch1);
+                if (i == 1) {
+                    step.setState(StepState.SHORT);
+                    step.setResultType(StepState.SHORT);
+                }
+                em.persist(step);
+            }
+
+            for (int i = 4; i <= 6; i++) {
+                var step = new Step();
+                step.setName("步骤-" + i);
+                step.setCode("S00" + i);
+                step.setBatch(batch2);
+                em.persist(step);
+            }
+        }
 
         System.out.println("Test data initialized successfully.");
     }

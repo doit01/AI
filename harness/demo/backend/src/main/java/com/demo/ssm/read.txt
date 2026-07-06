@@ -1,0 +1,19 @@
+处理订单流转 -> Machine ID = "ORDER_FLOW"
+
+处理物流追踪 -> Machine ID = "LOGISTICS_FLOW"
+
+处理审批流程 -> Machine ID = "APPROVAL_FLOW"
+
+针对你 2 台负载均衡的“特别注意事项”
+结合你之前的顾虑，这几个概念在分布式下有两个致命的坑：
+
+Action 和 Guard 必须是线程安全的（无状态）：因为 Action 是单例 Bean，被 Factory 持有。多个订单请求会同时进入同一个 Action 类的方法。
+
+❌ 错误：在 Action 里定义成员变量 private int count; 来计数。
+
+✅ 正确：Action 里只做方法逻辑，所有状态数据都从 context.getVariables()（来自 Redis 的变量）里取。
+
+不要在 Scope 上钻牛角尖：在分布式持久化方案下（Redis），Scopes 的作用被极大弱化了。因为你每次都是 restore -> 处理 -> persist，状态机实例存活时间仅在一次 HTTP 请求之内（毫秒级）。所以，你配置的 Scope 即使写 prototype，也只是保证每次 new 对象时不报错，真正存活的其实是 Redis 里的 JSON 数据。
+
+总结一句话
+Factory（工厂）负责根据 ID 提供图纸，Scope（作用域）决定机器用多久，Guards（守卫）决定“能不能做”，Actions（动作）负责“做什么”，而 Redis 里的 ID 是它们在 2 台机器间共享的唯一“身份证”。 只有 Actions 和 Guards 是业务代码的核心，其他（Factory/ID/Scopes）都是 Spring 框架帮你管理并发的底层基础设施

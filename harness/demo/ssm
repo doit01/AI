@@ -1,0 +1,8 @@
+我的项目实体有工艺实体，工艺实体有批次实体，批次实体有操作步骤实体，实现状态机管理三者的状态。JPA 将状态机存到PG库，因为我不想引入redis。
+加上guard，action，event。
+项目状态包括 create,cancel,finish ，其他字段包括name,code, id
+工艺状态不设置,字段包括name，code,id；
+批次状态:create , production,releasing,finish,cancel,其他字段包括 name,code,id
+操作步骤有create,executed{short，exceed,skip},其他字段包括name,code,id;
+
+在ui框架上给我UI页面，展示spring statemachine的用法。比如实现这几个实体的状态变化。后端代码放到ssm包下（当前有些学习的代码内容）。

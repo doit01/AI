@@ -1,0 +1,32 @@
+server:
+  port: 9090
+
+spring:
+  application:
+    name: admin-server
+  security:
+    user:
+      name: admin
+      password: changeme
+  mail:
+    host: ${MAIL_HOST:smtp.qq.com}
+    port: ${MAIL_PORT:587}
+    username: ${MAIL_USERNAME}
+    password: ${MAIL_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+  boot:
+    admin:
+      notify:
+        mail:
+          enabled: true
+          to: ${MAIL_TO}
+          from: ${MAIL_USERNAME}
+
+wechat:
+  work:
+    webhook-url: ${WECHAT_WEBHOOK_URL}

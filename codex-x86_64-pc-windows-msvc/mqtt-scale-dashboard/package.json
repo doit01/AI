@@ -19,11 +19,13 @@
     "@vueuse/core": "^13.3.0",
     "mqtt": "^5.13.0",
     "naive-ui": "^2.41.0",
+    "three": "^0.184.0",
     "vfonts": "^0.0.3",
     "vue": "^3.5.35"
   },
   "devDependencies": {
     "@iconify-json/lucide": "^1.2.42",
+    "@types/three": "^0.184.1",
     "@unocss/preset-icons": "^66.1.0",
     "@unocss/preset-uno": "^66.1.0",
     "@vitejs/plugin-vue": "^5.2.4",

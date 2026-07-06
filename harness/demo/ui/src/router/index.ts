@@ -30,6 +30,11 @@ const router = createRouter({
       component: () => import('@/views/manytomany/index.vue')
     },
     {
+      path: '/ssm',
+      name: 'Ssm',
+      component: () => import('@/views/ssm/index.vue')
+    },
+    {
       path: '/intro',
       name: 'Intro',
       component: () => import('@/views/intro/index.vue')

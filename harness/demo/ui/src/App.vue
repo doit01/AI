@@ -2,7 +2,7 @@
 import { ref, h } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { NConfigProvider, darkTheme, NMessageProvider, NDialogProvider, NNotificationProvider, NLayout, NLayoutSider, NMenu, NIcon } from 'naive-ui'
-import { HomeOutline, PeopleOutline, PersonOutline, SettingsOutline, ListOutline, GridOutline, DocumentOutline } from '@vicons/ionicons5'
+import { HomeOutline, PeopleOutline, PersonOutline, SettingsOutline, ListOutline, GridOutline, DocumentOutline, GitBranchOutline } from '@vicons/ionicons5'
 
 const router = useRouter()
 const route = useRoute()
@@ -13,6 +13,7 @@ const menuOptions = [
   { label: '角色管理', key: '/roles', icon: () => h(NIcon, null, h(PersonOutline)) },
   { label: '菜单管理', key: '/menus', icon: () => h(NIcon, null, h(SettingsOutline)) },
   { label: '学生选课 (ManyToMany)', key: '/manytomany', icon: () => h(NIcon, null, h(GridOutline)) },
+  { label: '状态机演示', key: '/ssm', icon: () => h(NIcon, null, h(GitBranchOutline)) },
   { label: '项目介绍', key: '/intro', icon: () => h(NIcon, null, h(DocumentOutline)) }
 ]
 

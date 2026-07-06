@@ -1,0 +1,36 @@
+[32m[Nest] 18268  - [39m2026/05/30 13:15:49 [32m    LOG[39m [38;5;3m[NestFactory] [39m[32mStarting Nest application...[39m
+[32m[Nest] 18268  - [39m2026/05/30 13:15:49 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mPrismaModule dependencies initialized[39m[38;5;3m +74ms[39m
+[32m[Nest] 18268  - [39m2026/05/30 13:15:49 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mLoggerModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 18268  - [39m2026/05/30 13:15:49 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mPassportModule dependencies initialized[39m[38;5;3m +1ms[39m
+[32m[Nest] 18268  - [39m2026/05/30 13:15:49 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mConfigHostModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 18268  - [39m2026/05/30 13:15:49 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mConfigModule dependencies initialized[39m[38;5;3m +4ms[39m
+[32m[Nest] 18268  - [39m2026/05/30 13:15:49 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mConfigModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 18268  - [39m2026/05/30 13:15:49 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mAppModule dependencies initialized[39m[38;5;3m +1ms[39m
+[32m[Nest] 18268  - [39m2026/05/30 13:15:49 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mJwtModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 18268  - [39m2026/05/30 13:15:49 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mDepartmentModule dependencies initialized[39m[38;5;3m +1ms[39m
+[32m[Nest] 18268  - [39m2026/05/30 13:15:49 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mUserModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 18268  - [39m2026/05/30 13:15:49 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mRoleModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 18268  - [39m2026/05/30 13:15:49 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mAuthModule dependencies initialized[39m[38;5;3m +1ms[39m
+2026-05-30 13:15:49 INFO [RoutesResolver] AuthController {/api/auth}:
+2026-05-30 13:15:49 INFO [RouterExplorer] Mapped {/api/auth/login, POST} route
+2026-05-30 13:15:49 INFO [RouterExplorer] Mapped {/api/auth/profile, GET} route
+2026-05-30 13:15:49 INFO [RoutesResolver] DepartmentController {/api/departments}:
+2026-05-30 13:15:49 INFO [RouterExplorer] Mapped {/api/departments, POST} route
+2026-05-30 13:15:49 INFO [RouterExplorer] Mapped {/api/departments, GET} route
+2026-05-30 13:15:49 INFO [RouterExplorer] Mapped {/api/departments/:id, GET} route
+2026-05-30 13:15:49 INFO [RouterExplorer] Mapped {/api/departments/:id, PATCH} route
+2026-05-30 13:15:49 INFO [RouterExplorer] Mapped {/api/departments/:id, DELETE} route
+2026-05-30 13:15:49 INFO [RoutesResolver] UserController {/api/users}:
+2026-05-30 13:15:49 INFO [RouterExplorer] Mapped {/api/users, POST} route
+2026-05-30 13:15:49 INFO [RouterExplorer] Mapped {/api/users, GET} route
+2026-05-30 13:15:49 INFO [RouterExplorer] Mapped {/api/users/:id, GET} route
+2026-05-30 13:15:49 INFO [RouterExplorer] Mapped {/api/users/:id, PATCH} route
+2026-05-30 13:15:49 INFO [RouterExplorer] Mapped {/api/users/:id, DELETE} route
+2026-05-30 13:15:49 INFO [RoutesResolver] RoleController {/api/roles}:
+2026-05-30 13:15:49 INFO [RouterExplorer] Mapped {/api/roles, POST} route
+2026-05-30 13:15:49 INFO [RouterExplorer] Mapped {/api/roles, GET} route
+2026-05-30 13:15:49 INFO [RouterExplorer] Mapped {/api/roles/:id, GET} route
+2026-05-30 13:15:49 INFO [RouterExplorer] Mapped {/api/roles/:id, PATCH} route
+2026-05-30 13:15:49 INFO [RouterExplorer] Mapped {/api/roles/:id, DELETE} route
+2026-05-30 13:15:50 INFO [NestApplication] Nest application successfully started
+2026-05-30 13:15:50 INFO [Bootstrap] Server running on http://localhost:3000

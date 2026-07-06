@@ -1,0 +1,6 @@
+export MAIL_USERNAME="your@qq.com"
+export MAIL_PASSWORD="authcode"
+export MAIL_TO="ops@company.com"
+export WECHAT_WEBHOOK_URL="https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=xxx"
+./gradlew bootRun
+或者写到 .env 文件然后 source，或直接在 application.yml 同级放 application-local.yml 用 --spring.profiles.active=local 启动。

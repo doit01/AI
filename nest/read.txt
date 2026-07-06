@@ -1,0 +1,6 @@
+Dev 代理： Vite proxy /api → localhost:3000
+但从未实际启动过两端来验证它们能正常通信。要做联调需要：
+1. PostgreSQL 跑起来（本地实例或 Docker）
+2. pnpm prisma:migrate 建表
+3. pnpm dev:server 启动后端（端口 3000）
+4. pnpm dev:web 启动前端（端口 5173）
