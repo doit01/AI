@@ -1,5 +1,20 @@
-1 https://github.com/Mintplex-Labs/anything-llm
+
 2 https://github.com/infiniflow/ragflow
+Hybrid Search
+BM25
+Embedding
+查询改写
+Chunk优化
+PDF解析
+OCR
+表格识别
+文档结构理解
+Hybrid Search
+ReRank
+Citation
+Agentic Retrieval  详细讲讲ragflow如何实现上面这些的
+
+
 
 
 方案三：Open WebUI + RAG（你应该会喜欢）
